@@ -25,7 +25,7 @@ export const ListPokemon = () => {
         <div>
             {loading && <p className="text-2xl font-bold">Loading...</p>}
             {error && <p className="text-2xl font-bold">Error: {error.message}</p>}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 ">
             {pokemonList.map((pokemon) => (
                     <CardPokemon
                         key={pokemon.name}
