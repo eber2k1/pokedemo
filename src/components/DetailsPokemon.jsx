@@ -7,6 +7,8 @@ import { StatsPokemon } from './PokemonComponents/StatsPokemon';
 import { PokemonDetails } from './PokemonComponents/PokemonDetails';
 import { AbilitiesPokemon } from './PokemonComponents/AbilitiesPokemon';
 import { getPokemonDetails, getPokemonSpecies } from '../services/api';
+import { LoadingSpinner } from './ui/LoadingSpinner';
+import { ErrorMessage } from './ui/ErrorMessage';
 
 export const DetailsPokemon = () => {
     const { id } = useParams();
@@ -42,28 +44,14 @@ export const DetailsPokemon = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-t-blue-500 border-blue-300 rounded-full animate-spin mx-auto"></div>
-                    <p className="mt-4 text-xl font-bold text-gray-700">Cargando Pokémon...</p>
-                </div>
+                <LoadingSpinner />
             </div>
         );
     }
 
     if (error || !pokemon) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-red-50 p-6">
-                <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
-                    <h1 className="text-2xl font-bold text-red-600 mb-4">¡Oops! Algo salió mal</h1>
-                    <p className="text-gray-600 mb-6">No pudimos cargar la información del Pokémon. Intenta de nuevo más tarde.</p>
-                    <button
-                        onClick={() => navigate('/')}
-                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                    >
-                        Volver al Inicio
-                    </button>
-                </div>
-            </div>
+            <ErrorMessage message="Error al cargar los detalles del Pokémon. Intenta de nuevo." />
         );
     }
     

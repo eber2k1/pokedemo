@@ -1,41 +1,50 @@
-import {CardPokemon} from "./CardPokemon";
-import { getPokemonList } from "../services/api";
-import { useEffect, useState } from "react";
+import { useEffect } from 'react';
+import { CardPokemon } from "./CardPokemon";
+import { LoadingSpinner } from "./ui/LoadingSpinner";
+import { ErrorMessage } from "./ui/ErrorMessage";
+import { usePokemonPagination } from "../hooks/usePokemonPagination";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
+
 export const ListPokemon = () => {
-    const [pokemonList, setPokemonList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    
+    const {
+        pokemonList,
+        loading,
+        error,
+        hasMore,
+        loadMorePokemon,
+        loadInitialData
+    } = usePokemonPagination(20); // 20 Pokémon por página
+
+    // Configurar scroll infinito
+    useInfiniteScroll(loadMorePokemon, loading, hasMore);
+
+    // Cargar datos iniciales
     useEffect(() => {
-        const fetchPokemonList = async () => {
-            setLoading(true);
-            try {
-                const data = await getPokemonList();
-                setPokemonList(data.results);
-            } catch (error) {
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPokemonList();
-    }, []);
-    
+        loadInitialData();
+    }, [loadInitialData]);
+
     return (
         <div>
-            {loading && <p className="text-2xl font-bold">Loading...</p>}
-            {error && <p className="text-2xl font-bold">Error: {error.message}</p>}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 ">
-            {pokemonList.map((pokemon) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {pokemonList.map((pokemon) => (
                     <CardPokemon
-                        key={pokemon.name}
+                        key={`${pokemon.id}-${pokemon.name}`}
                         id={pokemon.id}
-                        name={pokemon.name} 
+                        name={pokemon.name}
                         image={pokemon.image}
                         types={pokemon.types}
                     />
-            ))}
+                ))}
             </div>
+
+            {loading && <LoadingSpinner />}
+            {error && <ErrorMessage message="Error al cargar más Pokémon. Intenta de nuevo." />}
+            
+            {!loading && !hasMore && pokemonList.length > 0 && (
+                <div className="text-center my-4 text-gray-500">
+                    Has llegado al final de la lista de Pokémon.
+                </div>
+            )}
         </div>
-    )
-}
+    );
+};

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { PokemonImage } from './PokemonComponents/PokemonImage';
+import { TypesPokemon } from './PokemonComponents/TypesPokemon';
 
 export const CardPokemon = ({name, image, types, id}) => {
     return(
@@ -14,7 +15,7 @@ export const CardPokemon = ({name, image, types, id}) => {
                         height={96}
                     />
                 </div>
-                <p className="text-gray-600 font-bold text-center mt-auto">{types.join(' / ')}</p>
+                <TypesPokemon types={types} />
             </section>
         </Link>
     )
